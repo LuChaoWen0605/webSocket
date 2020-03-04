@@ -12,8 +12,6 @@ var httpServer = http.createServer(processRequest);
 var port = 8002;
 var localhost = "127.0.0.1"
 
-
-
 //指定一个监听的接口
 httpServer.listen(port, function() {
     console.log(`app is running at port:${port}`);

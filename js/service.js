@@ -64,7 +64,7 @@ var server = ws.createServer(function(conn){
                 response.type='message';
 
                 obj.fileName = fileName;
-                obj.filePath = 'http://45.40.194.70:8002/'+ fileName
+                obj.filePath = 'http://127.0.0.1:8002/'+ fileName
 
                 broadcast = uniqbroadcast(broadcast,"id");//去掉重复广播
 

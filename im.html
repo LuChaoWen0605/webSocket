@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style type="text/css">
+    	#mess{
+    		text-align: center;
+    	}
+        .talk_con{
+            width:600px;
+            height:520px;
+            border:1px solid #666;
+            margin:50px auto 0;
+            background:#f9f9f9;
+        }
+        .talk_show{
+            width:580px;
+            height:420px;
+            border:1px solid #666;
+            background:#DDD;
+            margin:10px auto 0;
+            overflow:auto;
+        }
+        .talk_input{
+            width:580px;
+            margin:10px auto 0;
+        }
+        .talk_word{
+            width:510px;
+            height:26px;
+            padding:0px;
+            float:left;
+            outline:none;
+        }
+        .talk_sub{
+            width:56px;
+            height:30px;
+            float:left;
+            margin-left:10px;
+        }
+        .atalk{
+           margin:10px;
+        }
+        .atalk span{
+            display:inline-block;
+            background:#FFF;
+            border-radius:10px;
+            color:#000;
+            padding:5px 10px;
+        }
+        .btalk{
+            margin:10px;
+            text-align:right;
+        }
+        .btalk span{
+            display:inline-block;
+            background:#54e149;
+            border-radius:10px;
+            color:#000;
+            padding:5px 10px;
+        }
+    </style>
+    <script src="js/jquery-2.1.0.js"></script>
+
+</head>
+<body>
+	<div id="mess">正在连接...</div>
+    <div class="talk_con">
+        <div class="talk_show" id="words">
+            <!--<div class="atalk"><span id="asay"></span></div>-->
+            <!--<div class="btalk"><span id="bsay">B说：345345354</span></div>-->
+        </div>
+        <div style="margin: 10px 5px 5px 10px;">
+            <input type="file" id="upload_file">
+        </div>
+        <div class="talk_input">
+            <input type="text" class="talk_word" id="talkwords">
+
+            <input type="button" value="发送" class="talk_sub" id="talksub">
+        </div>
+
+    </div>
+</body>
+<!--<script src="websocket.js"></script>-->
+<script>
+		var id = Math.floor(Math.random() * 100000) + 1;
+        var mess = document.getElementById("mess");
+        var Words = document.getElementById("words");
+        var msg = document.getElementById("talkwords");
+        if(window.WebSocket){
+           // var ws = new WebSocket('ws://127.0.0.1:8001');
+            var ws = new WebSocket('ws://45.40.194.70:8001');
+
+            ws.onopen = function(e){
+                console.log("连接服务器成功");
+              	ws.send(JSON.stringify({id:id}));
+            }
+            ws.onclose = function(e){
+                console.log("服务器关闭");
+
+                //重新连接
+
+
+            }
+            ws.onerror = function(){
+                console.log("连接出错");
+            }
+
+            ws.onmessage = function(e){
+            	// console.log(e.data)
+                mess.innerHTML = "连接成功"
+                document.querySelector(".talk_sub").onclick = function(e){
+
+            	    if($("#upload_file").val()){
+                        //传输文件
+                        let file=document.querySelector('#upload_file').files[0];
+                        let reader =new FileReader();
+
+                        reader.readAsArrayBuffer(file);
+                        reader.onload=()=>{
+                            console.log(reader.result);
+                            ws.send(JSON.stringify({name:file.name,operation:'upload',id:id}));
+                            ws.send(reader.result);
+                            $("#upload_file").val("");
+                        }
+                    }else {
+                        ws.send(JSON.stringify({
+                            id:id,
+                            msg:msg.value
+                        }));
+
+                        msg.value = "";
+                    }
+
+
+                }
+                var data = eval('(' + e.data + ')');
+
+                if(data.id && data.msg){
+
+                        if(id ==  data.id){
+                            str = '<div class="btalk"><span>我 :' + data.msg +'</span></div>';
+                        }
+                        else{
+                            str = '<div class="atalk"><span>其他人 :' + data.msg +'</span></div>' ;
+                        }
+
+
+	                Words.innerHTML = Words.innerHTML + str;
+                }else{
+                    if(data.fileName){
+                        if(id ==  data.id) {
+
+                            str = '<div class="btalk"><span><div style="cursor: pointer;"><img src="img/file.png">' + data.fileName + '</div></span><br/><a href="'+data.filePath+'">文件下载</a></div>'
+                        }else {
+                            str = '<div class="atalk"><span><div style="cursor: pointer;"><img src="img/file.png">' + data.fileName + '</div></span><br/><a href="'+data.filePath+'">文件下载</a></div>'
+                        }
+
+                        Words.innerHTML = Words.innerHTML + str;
+                    }
+
+                }
+
+
+            }
+        }
+    </script>
+</html>

@@ -1,0 +1,23 @@
+https://www.yuque.com/yizu/prd/ho4qqu 
+账号：13719311152
+密码：991245
+
+http://www.sosoapi.com/logout.htm
+账号：991243324@qq.com
+密码：000000
+
+--蓝湖
+https://lanhuapp.com/url/jDgbi
+账号：991243324@qq.com
+密码：wen991245
+
+
+创客桥：http://www.scrm.cn/
+创客桥后台地址：http://cqb.crm.com
+
+teambition
+账号：13719311152
+密码：Lcw@8888
+
+rm -rf views/*
+

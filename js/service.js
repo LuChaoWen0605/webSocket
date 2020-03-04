@@ -1,3 +1,4 @@
+//websocket服务
 var ws = require("nodejs-websocket");
 var fs = require('fs')
 var fileName='';
